@@ -2,6 +2,7 @@
 using APICatalogo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,21 +13,25 @@ namespace APICatalogo.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ILogger _logger;
 
-        public CategoriasController(AppDbContext contexto)
+        public CategoriasController(AppDbContext contexto, ILogger<CategoriasController> logger)
         {
             _context = contexto;
+            _logger = logger;
         }
 
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
+            _logger.LogInformation("============ Get api/categorias/produtos ============");
             return _context.Categorias.Include(c => c.Produtos).ToList();
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
+            _logger.LogInformation("============ Get api/categorias ============");
             return _context.Categorias.AsNoTracking().ToList();
         }
 
@@ -34,8 +39,10 @@ namespace APICatalogo.Controllers
         public ActionResult<Categoria> Get(int id)
         {
             var categoria = _context.Categorias.AsNoTracking().FirstOrDefault(c => c.CategoriaId == id);
+            _logger.LogInformation($"============ Get api/categorias/id = {id} ============");
             if (categoria == null)
             {
+                _logger.LogInformation($"============ Get api/categorias/id = {id} NOT FOUND ============");
                 return NotFound();
             }
 
