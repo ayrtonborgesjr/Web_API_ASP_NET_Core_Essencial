@@ -1,8 +1,6 @@
-﻿using APICatalogo.Context;
-using APICatalogo.Models;
+﻿using APICatalogo.Models;
+using APICatalogo.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,37 +10,31 @@ namespace APICatalogo.Controllers
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger _logger;
+        private readonly IUnitOfWork _uofw;
 
-        public CategoriasController(AppDbContext contexto, ILogger<CategoriasController> logger)
+        public CategoriasController(IUnitOfWork uofw)
         {
-            _context = contexto;
-            _logger = logger;
+            _uofw = uofw;
         }
 
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
-            _logger.LogInformation("============ Get api/categorias/produtos ============");
-            return _context.Categorias.Include(c => c.Produtos).ToList();
+            return _uofw.CategoriaRepository.GetCategoriasProdutos().ToList();
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            _logger.LogInformation("============ Get api/categorias ============");
-            return _context.Categorias.AsNoTracking().ToList();
+            return _uofw.CategoriaRepository.Get().ToList();
         }
 
         [HttpGet("{id}", Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
-            var categoria = _context.Categorias.AsNoTracking().FirstOrDefault(c => c.CategoriaId == id);
-            _logger.LogInformation($"============ Get api/categorias/id = {id} ============");
+            var categoria = _uofw.CategoriaRepository.GetById(c => c.CategoriaId == id);
             if (categoria == null)
             {
-                _logger.LogInformation($"============ Get api/categorias/id = {id} NOT FOUND ============");
                 return NotFound();
             }
 
@@ -52,14 +44,8 @@ namespace APICatalogo.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Categoria categoria)
         {
-            // Não precisa do código abaixo porque está sendo usado o [ApiController]
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest();
-            //}
-
-            _context.Categorias.Add(categoria);
-            _context.SaveChanges();
+            _uofw.CategoriaRepository.Add(categoria);
+            _uofw.Commit();
 
             return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.CategoriaId, categoria });
         }
@@ -67,19 +53,13 @@ namespace APICatalogo.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Categoria categoria)
         {
-            // Não precisa do código abaixo porque está sendo usado o [ApiController]
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest();
-            //}
-
             if (id != categoria.CategoriaId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(categoria).State = EntityState.Modified;
-            _context.SaveChanges();
+            _uofw.CategoriaRepository.Update(categoria);
+            _uofw.Commit();
 
             return Ok();
         }
@@ -87,14 +67,14 @@ namespace APICatalogo.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Categoria> Delete(int id)
         {
-            var categoria = _context.Categorias.AsNoTracking().FirstOrDefault(c => c.CategoriaId == id);
+            var categoria = _uofw.CategoriaRepository.GetById(c => c.CategoriaId == id);
             if (categoria == null)
             {
                 return NotFound();
             }
             
-            _context.Categorias.Remove(categoria);
-            _context.SaveChanges();
+            _uofw.CategoriaRepository.Delete(categoria);
+            _uofw.Commit();
 
             return categoria;
         }
