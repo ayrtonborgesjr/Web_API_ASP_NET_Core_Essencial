@@ -1,5 +1,7 @@
-﻿using APICatalogo.Models;
+﻿using APICatalogo.DTOs;
+using APICatalogo.Models;
 using APICatalogo.Repository;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,27 +13,35 @@ namespace APICatalogo.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProdutosController(IUnitOfWork unitOfWork)
+        public ProdutosController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet("menorpreco")]
-        public ActionResult<IEnumerable<Produto>> GetProdutosPorPreco()
+        public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosPorPreco()
         {
-            return _unitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
+            var produtos = _unitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
+            var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
+
+            return produtosDto;
         }
 
         // api/produtos
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>> Get()
+        public ActionResult<IEnumerable<ProdutoDTO>> Get()
         {
-            return _unitOfWork.ProdutoRepository.Get().ToList();
+            var produtos = _unitOfWork.ProdutoRepository.Get().ToList();
+            var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
+
+            return produtosDto;
         }
 
         [HttpGet("{id}", Name = "ObterProduto")]
-        public ActionResult<Produto> Get(int id)
+        public ActionResult<ProdutoDTO> Get(int id)
         {
             var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
             if (produto == null)
@@ -39,25 +49,33 @@ namespace APICatalogo.Controllers
                 return NotFound();
             }
 
-            return produto;
+            var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+
+            return produtoDto;
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] Produto produto)
+        public ActionResult Post([FromBody] ProdutoDTO produtoDto)
         {
+            var produto = _mapper.Map<Produto>(produtoDto);
+
             _unitOfWork.ProdutoRepository.Add(produto);
             _unitOfWork.Commit();
 
-            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId, produto });
+            var produtoDTO = _mapper.Map<ProdutoDTO>(produto);
+
+            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId, produtoDTO });
         }
 
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Produto produto)
+        public ActionResult Put(int id, [FromBody] ProdutoDTO produtoDto)
         {
-            if (id != produto.ProdutoId)
+            if (id != produtoDto.ProdutoId)
             {
                 return BadRequest();
             }
+
+            var produto = _mapper.Map<Produto>(produtoDto);
 
             _unitOfWork.ProdutoRepository.Update(produto);
             _unitOfWork.Commit();
@@ -66,7 +84,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Produto> Delete(int id)
+        public ActionResult<ProdutoDTO> Delete(int id)
         {
             var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
             if (produto == null)
@@ -77,7 +95,9 @@ namespace APICatalogo.Controllers
             _unitOfWork.ProdutoRepository.Delete(produto);
             _unitOfWork.Commit();
 
-            return produto;
+            var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+
+            return produtoDto;
         }
     }
 }
