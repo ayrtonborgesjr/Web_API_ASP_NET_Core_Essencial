@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>APICatalogo</name>
+    </assembly>
+    <members>
+        <member name="M:APICatalogo.Controllers.CategoriasController.Get(System.Int32)">
+            <summary>
+            Obtem uma categoria pelo seu Id
+            </summary>
+            <param name="id"></param>
+            <returns>Objetos Categoria</returns>
+        </member>
+        <member name="M:APICatalogo.Controllers.CategoriasController.Post(APICatalogo.DTOs.CategoriaDTO)">
+            <summary>
+            Inclui uma nova Categoria
+            </summary>
+            <remarks>
+            Exemplo de request  :
+            
+                POST api/categorias
+                {
+                    "categoriaId" : 1,
+                    "nome": "categoria 1",
+                    "imagemURL": "http://teste.net/1.jpg"
+                }
+            </remarks>
+            <param name="categoriaDto">Objeto Categoria</param>
+            <returns>Objeto Categoria incluído</returns>
+            <remarks>Retorna um Objeto Categoria incluído</remarks>
+        </member>
+        <member name="M:APICatalogo.Controllers.ProdutosController.Get(APICatalogo.Pagination.ProdutosParameters)">
+            <summary>
+            Exibe uma relação de Produtos
+            </summary>
+            <param name="produtosParameters"></param>
+            <returns>Retorna uma lista de objetos Produto</returns>
+        </member>
+        <member name="M:APICatalogo.Controllers.ProdutosController.Get(System.Int32)">
+            <summary>
+            Obtem um produto pelo Identificador produtoId
+            </summary>
+            <param name="id">Código do Produto</param>
+            <returns>Um objeto Produto</returns>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.AuthorizesController.RegisterUser(APICatalogo.DTOs.UserDTO)">
+            <summary>
+            Registra um novo Usuário
+            </summary>
+            <param name="model">Um objeto UsuarioDTO</param>
+            <returns>Status 200 e um token para o cliente</returns>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.AuthorizesController.Login(APICatalogo.DTOs.UserDTO)">
+            <summary>
+            Verifica as credenciais de um Usuário
+            </summary>
+            <param name="userInfo">Um objeto do tipo UsuarioDTO</param>
+            <returns>Status 200 e um token para o Usuário</returns>
+            <remarks>retorna o Status 200 e um token para o Usuário</remarks>
+        </member>
+    </members>
+</doc>

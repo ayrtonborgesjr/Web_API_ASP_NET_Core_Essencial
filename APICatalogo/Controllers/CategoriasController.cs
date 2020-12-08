@@ -4,6 +4,7 @@ using APICatalogo.Pagination;
 using APICatalogo.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ using System.Threading.Tasks;
 namespace APICatalogo.Controllers
 {
     //[Authorize(AuthenticationSchemes = "Bearer")]
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
     [Route("api/[Controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
@@ -56,7 +59,14 @@ namespace APICatalogo.Controllers
             return categoriasDto;
         }
 
+        /// <summary>
+        /// Obtem uma categoria pelo seu Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Objetos Categoria</returns>
         [HttpGet("{id}", Name = "ObterCategoria")]
+        [ProducesResponseType(typeof(CategoriaDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<CategoriaDTO>> Get(int id)
         {
             var categoria = await _unitOfWork.CategoriaRepository.GetById(c => c.CategoriaId == id);
@@ -70,7 +80,25 @@ namespace APICatalogo.Controllers
             return categoriaDto;
         }
 
+        /// <summary>
+        /// Inclui uma nova Categoria
+        /// </summary>
+        /// <remarks>
+        /// Exemplo de request  :
+        /// 
+        ///     POST api/categorias
+        ///     {
+        ///         "categoriaId" : 1,
+        ///         "nome": "categoria 1",
+        ///         "imagemURL": "http://teste.net/1.jpg"
+        ///     }
+        /// </remarks>
+        /// <param name="categoriaDto">Objeto Categoria</param>
+        /// <returns>Objeto Categoria incluído</returns>
+        /// <remarks>Retorna um Objeto Categoria incluído</remarks>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Post([FromBody] CategoriaDTO categoriaDto)
         {
             var categoria = _mapper.Map<Categoria>(categoriaDto);
@@ -84,6 +112,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> Put(int id, [FromBody] CategoriaDTO categoriaDto)
         {
             if (id != categoriaDto.CategoriaId)

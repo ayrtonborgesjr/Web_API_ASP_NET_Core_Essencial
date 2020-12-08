@@ -3,6 +3,7 @@ using APICatalogo.Models;
 using APICatalogo.Pagination;
 using APICatalogo.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ using System.Threading.Tasks;
 
 namespace APICatalogo.Controllers
 {
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
     [Route("api/[Controller]")]
     [ApiController]
     public class ProdutosController : ControllerBase
@@ -32,6 +35,11 @@ namespace APICatalogo.Controllers
             return produtosDto;
         }
 
+        /// <summary>
+        /// Exibe uma relação de Produtos
+        /// </summary>
+        /// <param name="produtosParameters"></param>
+        /// <returns>Retorna uma lista de objetos Produto</returns>
         // api/produtos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get([FromQuery] ProdutosParameters produtosParameters)
@@ -55,7 +63,14 @@ namespace APICatalogo.Controllers
             return produtosDto;
         }
 
+        /// <summary>
+        /// Obtem um produto pelo Identificador produtoId
+        /// </summary>
+        /// <param name="id">Código do Produto</param>
+        /// <returns>Um objeto Produto</returns>
         [HttpGet("{id}", Name = "ObterProduto")]
+        [ProducesResponseType(typeof(ProdutoDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProdutoDTO>> Get(int id)
         {
             var produto = await _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
@@ -70,6 +85,8 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Post([FromBody] ProdutoDTO produtoDto)
         {
             var produto = _mapper.Map<Produto>(produtoDto);
@@ -83,6 +100,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> Put(int id, [FromBody] ProdutoDTO produtoDto)
         {
             if (id != produtoDto.ProdutoId)

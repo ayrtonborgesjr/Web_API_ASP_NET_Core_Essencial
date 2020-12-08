@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace ApiCatalogo.Controllers
 {
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
     [Route("api/[Controller]")]
     [ApiController]
     public class AuthorizesController : ControllerBase
@@ -35,6 +37,11 @@ namespace ApiCatalogo.Controllers
                + DateTime.Now.ToLongDateString();
         }
 
+        /// <summary>
+        /// Registra um novo Usuário
+        /// </summary>
+        /// <param name="model">Um objeto UsuarioDTO</param>
+        /// <returns>Status 200 e um token para o cliente</returns>
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser([FromBody] UserDTO model)
         {
@@ -61,6 +68,12 @@ namespace ApiCatalogo.Controllers
             return Ok(GenereteToken(model));
         }
 
+        /// <summary>
+        /// Verifica as credenciais de um Usuário
+        /// </summary>
+        /// <param name="userInfo">Um objeto do tipo UsuarioDTO</param>
+        /// <returns>Status 200 e um token para o Usuário</returns>
+        /// <remarks>retorna o Status 200 e um token para o Usuário</remarks>
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] UserDTO userInfo)
         {
