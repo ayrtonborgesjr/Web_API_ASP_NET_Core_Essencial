@@ -4,7 +4,13 @@
         <name>APICatalogo</name>
     </assembly>
     <members>
-        <member name="M:APICatalogo.Controllers.CategoriasController.Get(System.Int32)">
+        <member name="M:APICatalogo.Controllers.CategoriasController.Get">
+            <summary>
+            Retorna uma coleção de objetos Categoria
+            </summary>
+            <returns>Lista de Categorias</returns>
+        </member>
+        <member name="M:APICatalogo.Controllers.CategoriasController.Get(System.Nullable{System.Int32})">
             <summary>
             Obtem uma categoria pelo seu Id
             </summary>

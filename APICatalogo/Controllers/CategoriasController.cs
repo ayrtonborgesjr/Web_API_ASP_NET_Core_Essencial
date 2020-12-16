@@ -3,11 +3,13 @@ using APICatalogo.Models;
 using APICatalogo.Pagination;
 using APICatalogo.Repository;
 using AutoMapper;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace APICatalogo.Controllers
@@ -31,13 +33,35 @@ namespace APICatalogo.Controllers
         [HttpGet("produtos")]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasProdutos()
         {
+            // _logger.LogInformation("================GET api/categorias/produtos ======================");
+
             var categorias = await _unitOfWork.CategoriaRepository.GetCategoriasProdutos();
             var categoriasDto = _mapper.Map<List<CategoriaDTO>>(categorias);
 
             return categoriasDto;
         }
 
+        /// <summary>
+        /// Retorna uma coleção de objetos Categoria
+        /// </summary>
+        /// <returns>Lista de Categorias</returns>
         [HttpGet]
+        public ActionResult<IEnumerable<CategoriaDTO>> Get()
+        {
+            try
+            {
+                var categorias = _unitOfWork.CategoriaRepository.Get().ToList();
+                var categoriasDto = _mapper.Map<List<CategoriaDTO>>(categorias);
+                
+                return categoriasDto;
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("paginacao")]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery] CategoriasParameters categoriasParameters)
         {
             var categorias = await _unitOfWork.CategoriaRepository.GetCategorias(categoriasParameters);
@@ -67,17 +91,25 @@ namespace APICatalogo.Controllers
         [HttpGet("{id}", Name = "ObterCategoria")]
         [ProducesResponseType(typeof(CategoriaDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CategoriaDTO>> Get(int id)
+        public async Task<ActionResult<CategoriaDTO>> Get(int? id)
         {
-            var categoria = await _unitOfWork.CategoriaRepository.GetById(c => c.CategoriaId == id);
-            if (categoria == null)
+            try
             {
-                return NotFound();
+                var categoria = await _unitOfWork.CategoriaRepository.GetById(c => c.CategoriaId == id);
+
+                if (categoria == null)
+                {
+                    return NotFound();
+                }
+
+                var categoriaDto = _mapper.Map<CategoriaDTO>(categoria);
+
+                return categoriaDto;
             }
-
-            var categoriaDto = _mapper.Map<CategoriaDTO>(categoria);
-
-            return categoriaDto;
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
