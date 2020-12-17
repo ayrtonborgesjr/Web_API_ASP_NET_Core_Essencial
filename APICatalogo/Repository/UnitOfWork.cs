@@ -1,5 +1,4 @@
 ﻿using APICatalogo.Context;
-using System.Threading.Tasks;
 
 namespace APICatalogo.Repository
 {
@@ -8,10 +7,9 @@ namespace APICatalogo.Repository
         private ProdutoRepository _produtoRepo;
         private CategoriaRepository _categoriaRepo;
         public AppDbContext _context;
-
-        public UnitOfWork(AppDbContext context)
+        public UnitOfWork(AppDbContext contexto)
         {
-            _context = context;
+            _context = contexto;
         }
 
         public IProdutoRepository ProdutoRepository
@@ -28,16 +26,17 @@ namespace APICatalogo.Repository
             {
                 return _categoriaRepo = _categoriaRepo ?? new CategoriaRepository(_context);
             }
-        }            
+        }
 
-        public async Task Commit()
+        public void Commit()
         {
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         public void Dispose()
         {
             _context.Dispose();
         }
+
     }
 }

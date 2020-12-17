@@ -4,65 +4,84 @@
         <name>APICatalogo</name>
     </assembly>
     <members>
+        <member name="M:APICatalogo.Controllers.AutorizaController.RegisterUser(APICatalogo.DTOs.UserDTO)">
+            <summary>
+            Registra um novo usuário
+            </summary>
+            <param name="model">Um objeto UsuarioDTO</param>
+            <returns>Status 200 e o token para o cliente</returns>
+        </member>
+        <member name="M:APICatalogo.Controllers.AutorizaController.Login(APICatalogo.DTOs.UserDTO)">
+            <summary>
+            Verifica as credenciais de um usuário
+            </summary>
+            <param name="userInfo">Um objeot do tipo UsuarioDTO</param>
+            <returns>Status 200 e o token para o cliente</returns>
+            <remarks>retorna o Status 200 e o token para  novo</remarks>
+        </member>
+        <member name="M:APICatalogo.Controllers.CategoriasController.GetCategoriasProdutos">
+            <summary>
+            Obtém os produtos relacionados para cada categoria
+            </summary>
+            <returns>Objetos Categoria e respectivo Objetos Produtos</returns>
+        </member>
         <member name="M:APICatalogo.Controllers.CategoriasController.Get">
             <summary>
             Retorna uma coleção de objetos Categoria
             </summary>
             <returns>Lista de Categorias</returns>
         </member>
-        <member name="M:APICatalogo.Controllers.CategoriasController.Get(System.Nullable{System.Int32})">
+        <member name="M:APICatalogo.Controllers.CategoriasController.Get(System.Int32)">
             <summary>
-            Obtem uma categoria pelo seu Id
+            Obtem uma Categoria pelo seu Id
             </summary>
-            <param name="id"></param>
+            <param name="id">codigo do categoria</param>
             <returns>Objetos Categoria</returns>
         </member>
         <member name="M:APICatalogo.Controllers.CategoriasController.Post(APICatalogo.DTOs.CategoriaDTO)">
-            <summary>
-            Inclui uma nova Categoria
-            </summary>
-            <remarks>
-            Exemplo de request  :
+             <summary>
+             Inclui uma nova categoria
+             </summary>
+             <remarks>
+             Exemplo de request:
             
-                POST api/categorias
-                {
-                    "categoriaId" : 1,
-                    "nome": "categoria 1",
-                    "imagemURL": "http://teste.net/1.jpg"
-                }
-            </remarks>
-            <param name="categoriaDto">Objeto Categoria</param>
-            <returns>Objeto Categoria incluído</returns>
-            <remarks>Retorna um Objeto Categoria incluído</remarks>
+                 POST api/categorias
+                 {
+                    "categoriaId": 1,
+                    "nome": "categoria1",
+                    "imagemUrl": "http://teste.net/1.jpg"
+                 }
+             </remarks>
+             <param name="categoriaDto">objeto Categoria</param>
+             <returns>O objeto Categoria incluida</returns>
+             <remarks>Retorna um objeto Categoria incluído</remarks>
         </member>
-        <member name="M:APICatalogo.Controllers.ProdutosController.Get(APICatalogo.Pagination.ProdutosParameters)">
+        <member name="M:APICatalogo.Controllers.ProdutosController.GetProdutosPrecos">
             <summary>
-            Exibe uma relação de Produtos
+            Obtém os produtos ordenados por preço na ordem ascendente
             </summary>
-            <param name="produtosParameters"></param>
+            <returns>Lista de objetos Produtos ordenados por preço</returns>
+        </member>
+        <member name="M:APICatalogo.Controllers.ProdutosController.Get">
+            <summary>
+            Exibe uma relação dos produtos
+            </summary>
             <returns>Retorna uma lista de objetos Produto</returns>
         </member>
         <member name="M:APICatalogo.Controllers.ProdutosController.Get(System.Int32)">
             <summary>
-            Obtem um produto pelo Identificador produtoId
+            Obtem um produto pelo seu identificador produtoId
             </summary>
-            <param name="id">Código do Produto</param>
+            <param name="id">Código do produto</param>
             <returns>Um objeto Produto</returns>
         </member>
-        <member name="M:ApiCatalogo.Controllers.AuthorizesController.RegisterUser(APICatalogo.DTOs.UserDTO)">
+        <member name="M:APICatalogo.Controllers.ProdutosController.Put(System.Int32,APICatalogo.DTOs.ProdutoDTO)">
             <summary>
-            Registra um novo Usuário
+            Atualiza um produto pelo id
             </summary>
-            <param name="model">Um objeto UsuarioDTO</param>
-            <returns>Status 200 e um token para o cliente</returns>
-        </member>
-        <member name="M:ApiCatalogo.Controllers.AuthorizesController.Login(APICatalogo.DTOs.UserDTO)">
-            <summary>
-            Verifica as credenciais de um Usuário
-            </summary>
-            <param name="userInfo">Um objeto do tipo UsuarioDTO</param>
-            <returns>Status 200 e um token para o Usuário</returns>
-            <remarks>retorna o Status 200 e um token para o Usuário</remarks>
+            <param name="id"></param>
+            <param name="produtoDto"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

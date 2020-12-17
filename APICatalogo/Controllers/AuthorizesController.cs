@@ -4,25 +4,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiCatalogo.Controllers
+namespace APICatalogo.Controllers
 {
-    [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
     [Route("api/[Controller]")]
     [ApiController]
-    public class AuthorizesController : ControllerBase
+    public class AutorizaController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AuthorizesController(UserManager<IdentityUser> userManager,
+        public AutorizaController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -38,10 +38,10 @@ namespace ApiCatalogo.Controllers
         }
 
         /// <summary>
-        /// Registra um novo Usuário
+        /// Registra um novo usuário
         /// </summary>
         /// <param name="model">Um objeto UsuarioDTO</param>
-        /// <returns>Status 200 e um token para o cliente</returns>
+        /// <returns>Status 200 e o token para o cliente</returns>
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser([FromBody] UserDTO model)
         {
@@ -65,15 +65,15 @@ namespace ApiCatalogo.Controllers
             }
 
             await _signInManager.SignInAsync(user, false);
-            return Ok(GenereteToken(model));
+            return Ok(GeraToken(model));
         }
 
         /// <summary>
-        /// Verifica as credenciais de um Usuário
+        /// Verifica as credenciais de um usuário
         /// </summary>
-        /// <param name="userInfo">Um objeto do tipo UsuarioDTO</param>
-        /// <returns>Status 200 e um token para o Usuário</returns>
-        /// <remarks>retorna o Status 200 e um token para o Usuário</remarks>
+        /// <param name="userInfo">Um objeot do tipo UsuarioDTO</param>
+        /// <returns>Status 200 e o token para o cliente</returns>
+        /// <remarks>retorna o Status 200 e o token para  novo</remarks>
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] UserDTO userInfo)
         {
@@ -89,7 +89,7 @@ namespace ApiCatalogo.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(GenereteToken(userInfo));
+                return Ok(GeraToken(userInfo));
             }
             else
             {
@@ -98,7 +98,7 @@ namespace ApiCatalogo.Controllers
             }
         }
 
-        private UserToken GenereteToken(UserDTO userInfo)
+        private UserToken GeraToken(UserDTO userInfo)
         {
             //define declarações do usuário
             var claims = new[]

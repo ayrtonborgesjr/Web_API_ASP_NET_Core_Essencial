@@ -154,7 +154,7 @@ namespace APICatalogo
             //adiciona o middleware que habilita a autorizacao
             app.UseAuthorization();
 
-            app.UseCors(option => option.AllowAnyOrigin());
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             //Habilira o middleware para servir o Swagger 
             //gerado como um endpoint  JSON       
