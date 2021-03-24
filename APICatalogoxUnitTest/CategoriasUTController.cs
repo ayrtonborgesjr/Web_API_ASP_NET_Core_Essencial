@@ -94,28 +94,28 @@ namespace APICatalogoxUnitTest
 
         //====================================Get(int id) =====================================
         [Fact]
-        public async void GetCategoriaById_Return_OkResult()
+        public void GetCategoriaById_Return_OkResult()
         {
             //Arrange  
             var controller = new CategoriasController(repository, mapper);
             var catId = 4;
 
             //Act  
-            var data = await controller.Get(catId);
+            var data = controller.Get(catId);
 
             //Assert  
             Assert.IsType<CategoriaDTO>(data.Value);
         }
 
         [Fact]
-        public async void GetCategoriaById_Return_NotFoundResult()
+        public void GetCategoriaById_Return_NotFoundResult()
         {
             //Arrange  
             var controller = new CategoriasController(repository, mapper);
             var catId = 999;
 
             //Act  
-            var data = await controller.Get(catId);
+            var data = controller.Get(catId);
 
             //Assert  
             Assert.IsType<NotFoundResult>(data.Result);
@@ -123,7 +123,7 @@ namespace APICatalogoxUnitTest
 
         // POST - CreateResult
         [Fact]
-        public async void Post_Categoria_AddValidData_Return_CreatedResult()
+        public void Post_Categoria_AddValidData_Return_CreatedResult()
         {
             //Arrange  
             var controller = new CategoriasController(repository, mapper);
@@ -131,7 +131,7 @@ namespace APICatalogoxUnitTest
             var cat = new CategoriaDTO() { Nome = "Teste Unitário Inclusão", ImagemUrl = "testeunitarioinclusao.jpg" };
 
             //Act  
-            var data = await controller.Post(cat);
+            var data = controller.Post(cat);
 
             //Assert  
             Assert.IsType<CreatedAtRouteResult>(data);
@@ -139,14 +139,14 @@ namespace APICatalogoxUnitTest
 
         // PUT
         [Fact]
-        public async void Put_Categoria_Update_ValidData_Return_OkResult()
+        public void Put_Categoria_Update_ValidData_Return_OkResult()
         {
             //Arrange  
             var controller = new CategoriasController(repository, mapper);
             var catId = 9;
 
             //Act  
-            var existingPost = await controller.Get(catId);
+            var existingPost = controller.Get(catId);
             var result = existingPost.Value.Should().BeAssignableTo<CategoriaDTO>().Subject;
 
             var catDto = new CategoriaDTO();
@@ -154,7 +154,7 @@ namespace APICatalogoxUnitTest
             catDto.Nome = "Alterado - Teste Unitário Inclusão";
             catDto.ImagemUrl = result.ImagemUrl;
 
-            var updatedData = await controller.Put(catId, catDto);
+            var updatedData = controller.Put(catId, catDto);
 
             //Assert  
             Assert.IsType<OkResult>(updatedData);
@@ -162,14 +162,14 @@ namespace APICatalogoxUnitTest
 
         // Delete
         [Fact]
-        public async void Delete_Categoria_Return_OkResult()
+        public void Delete_Categoria_Return_OkResult()
         {
             //Arrange  
             var controller = new CategoriasController(repository, mapper);
-            var catId = 9;
+            var catId = 13;
 
             //Act  
-            var data = await controller.Delete(catId);
+            var data = controller.Delete(catId);
 
             //Assert  
             Assert.IsType<CategoriaDTO>(data.Value);
